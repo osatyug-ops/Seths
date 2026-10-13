@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SethWin Master Admin - Professional Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #05070B;
+            --card-glass: #0C1019;
+            --border-gold: rgba(243, 168, 18, 0.3);
+            --gold-grad: linear-gradient(135deg, #FFE885, #F3A812);
+            --gold-text: #FAD02C;
+            --text-main: #FFFFFF;
+            --text-sub: #8E9AAF;
+            --green: #00E676;
+            --red: #FF3D00;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; padding: 16px; background-image: radial-gradient(circle at 50% 0%, #131A29 0%, #05070B 80%); }
+        
+        .admin-shell { width: 100%; max-width: 560px; background: #080B12; border: 1px solid var(--border-gold); border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.95); }
+        .admin-head { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 900; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 18px; text-align: center; letter-spacing: 1px; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        .kpi-box { background: #05080E; border: 1px solid var(--border-gold); border-radius: 10px; padding: 8px; text-align: center; }
+        .kpi-title { font-size: 9px; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
+        .kpi-val { font-size: 13px; font-weight: 900; color: var(--gold-text); margin-top: 3px; }
+
+        .card { background: var(--card-glass); border: 1px solid var(--border-gold); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+        .card-title { font-size: 13px; font-weight: 800; color: var(--gold-text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 10px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; background: #04060A; border: 1px solid rgba(255,255,255,0.12); color: #FFF; padding: 10px; border-radius: 8px; font-size: 12px; outline: none; }
+
+        .btn { background: var(--gold-grad); color: #000; border: none; padding: 11px; border-radius: 8px; font-weight: 800; width: 100%; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+        .btn-green { background: linear-gradient(135deg, #00E676, #00897B); color: #FFF; }
+        .btn-red { background: linear-gradient(135deg, #FF3D00, #B71C1C); color: #FFF; }
+        .btn-sm { padding: 5px 8px; font-size: 10px; width: auto; border-radius: 5px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
+        th, td { padding: 7px 5px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        th { color: var(--text-sub); font-weight: 700; }
+
+        .load-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; max-height: 200px; overflow-y: auto; padding-right: 3px; }
+        .load-card { background: #04060A; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 5px; text-align: center; }
+        .load-num { font-weight: 900; color: var(--gold-text); font-size: 12px; }
+        .load-amt { font-size: 9px; color: var(--green); font-weight: 700; margin-top: 2px; }
+    </style>
+</head>
+<body>
+    <div class="admin-shell">
+        <div id="authBox">
+            <div class="admin-head">ADMIN SECURITY GATEWAY</div>
+            <div class="card">
+                <div class="card-title">🔐 Master Admin Login</div>
+                <div class="form-group">
+                    <input type="password" id="adminPinInput" placeholder="Security PIN: 7890">
+                </div>
+                <button class="btn" id="loginAdminBtn">Unlock Dashboard</button>
+            </div>
+        </div>
+
+        <div id="dashBox" style="display:none;">
+            <div class="admin-head">MASTER CONTROL PANEL</div>
+
+            <div class="kpi-grid">
+                <div class="kpi-box">
+                    <div class="kpi-title">Users</div>
+                    <div class="kpi-val" id="kpiUsers">0</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-title">Sys Points</div>
+                    <div class="kpi-val" id="kpiBalance">0 PTS</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-title">Active Load</div>
+                    <div class="kpi-val" id="kpiBids">0 PTS</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-title">Payouts</div>
+                    <div class="kpi-val" id="kpiWins" style="color:var(--green);">0 PTS</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎲 Declare Result & Auto-Credit Winners</div>
+                <div class="form-group">
+                    <label>Select Date</label>
+                    <input type="date" id="resultDateInput">
+                </div>
+                <div class="form-group">
+                    <label>Select Market</label>
+                    <select id="marketSelect">
+                        <option value="DESAWAR">DESAWAR</option>
+                        <option value="GALI">GALI</option>
+                        <option value="FARIDABAD">FARIDABAD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Winning 2-Digit Number (00-99)</label>
+                    <input type="text" id="resultNum" maxlength="2" placeholder="e.g. 58">
+                </div>
+                <button class="btn btn-green" id="publishBtn">Publish Result & Settle Points</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>📊 Active Load Analysis (00-99)</span>
+                    <button class="btn btn-sm btn-green" id="refreshLoadBtn">🔄 Refresh</button>
+                </div>
+                <div class="form-group">
+                    <select id="marketFilterSelect">
+                        <option value="ALL">All Active Open Markets</option>
+                        <option value="DESAWAR">DESAWAR</option>
+                        <option value="GALI">GALI</option>
+                        <option value="FARIDABAD">FARIDABAD</option>
+                    </select>
+                </div>
+                <div class="load-grid" id="numberLoadGrid"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">👥 User-Wise Bets History</div>
+                <div style="max-height: 180px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr><th>User</th><th>Market</th><th>Num</th><th>Amount</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="adminBidsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💳 Deposit & Withdrawal Requests</div>
+                <div style="max-height: 160px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr><th>User</th><th>Type</th><th>Amount</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="walletReqTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⚙️ User Accounts Management</div>
+                <div class="form-group">
+                    <input type="text" id="newAdminUser" placeholder="New Username">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="newAdminPass" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="newAdminPts" value="1000" placeholder="Opening Points">
+                </div>
+                <button class="btn" id="createUserBtn" style="margin-bottom:12px;">Create User</button>
+
+                <div style="font-size:11px; color:var(--gold-text); font-weight:800; margin-bottom:6px;">All Registered Users:</div>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr><th>User</th><th>Pass</th><th>Bal</th><th>Manage</th></tr>
+                        </thead>
+                        <tbody id="userMgmtTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('resultDateInput').valueAsDate = new Date();
+
+        document.getElementById('loginAdminBtn').addEventListener('click', function() {
+            if(document.getElementById('adminPinInput').value === '7890') {
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('dashBox').style.display = 'block';
+                loadMasterData();
+            } else {
+                alert('Wrong Security PIN!');
+            }
+        });
+
+        function loadMasterData() {
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            let bids = JSON.parse(localStorage.getItem('sethwin_bids')) || [];
+            let txns = JSON.parse(localStorage.getItem('sethwin_txns')) || [];
+
+            document.getElementById('kpiUsers').innerText = users.length;
+            let totBal = users.reduce((acc, u) => acc + parseInt(u.balance || 0), 0);
+            document.getElementById('kpiBalance').innerText = totBal.toLocaleString() + ' PTS';
+
+            let openBids = bids.filter(b => b.status === 'OPEN' || !b.status);
+            let totLoad = openBids.reduce((acc, b) => acc + parseInt(b.pts || 0), 0);
+            document.getElementById('kpiBids').innerText = totLoad.toLocaleString() + ' PTS';
+
+            let winPayout = bids.filter(b => b.status === 'WIN').reduce((acc, b) => acc + (parseInt(b.pts) * 90), 0);
+            document.getElementById('kpiWins').innerText = winPayout.toLocaleString() + ' PTS';
+
+            const selMarket = document.getElementById('marketFilterSelect').value;
+            let filteredLoadBids = openBids;
+
+            if(selMarket !== 'ALL') {
+                filteredLoadBids = openBids.filter(b => b.market === selMarket);
+            }
+
+            const grid = document.getElementById('numberLoadGrid');
+            grid.innerHTML = '';
+            let numTotals = {};
+            for(let i=0; i<100; i++) {
+                let formatted = i < 10 ? '0' + i : '' + i;
+                numTotals[formatted] = 0;
+            }
+            filteredLoadBids.forEach(b => {
+                if(numTotals[b.num] !== undefined) numTotals[b.num] += parseInt(b.pts);
+            });
+
+            for(let i=0; i<100; i++) {
+                let num = i < 10 ? '0' + i : '' + i;
+                let card = document.createElement('div');
+                card.className = 'load-card';
+                if(numTotals[num] > 0) card.style.borderColor = 'var(--gold-text)';
+                card.innerHTML = `<div class="load-num">${num}</div><div class="load-amt">${numTotals[num]} PTS</div>`;
+                grid.appendChild(card);
+            }
+
+            const bidsTb = document.getElementById('adminBidsTable');
+            if(bids.length === 0) {
+                bidsTb.innerHTML = `<tr><td colspan="5" style="text-align:center;">No bids placed yet.</td></tr>`;
+            } else {
+                bidsTb.innerHTML = bids.map(b => `
+                    <tr>
+                        <td><b>${b.user || 'VIP User'}</b></td>
+                        <td>${b.market}</td>
+                        <td><b style="color:var(--gold-text);">${b.num}</b></td>
+                        <td><b>${b.pts} PTS</b></td>
+                        <td><b style="color:${b.status === 'WIN' ? 'var(--green)' : (b.status === 'LOSS' ? 'var(--red)' : 'var(--gold-text)')}">${b.status || 'OPEN'}</b></td>
+                    </tr>
+                `).join('');
+            }
+
+            const txnTb = document.getElementById('walletReqTable');
+            let pending = txns.filter(t => t.status === 'Pending');
+            if(pending.length === 0) {
+                txnTb.innerHTML = `<tr><td colspan="4" style="text-align:center;">No pending requests.</td></tr>`;
+            } else {
+                txnTb.innerHTML = pending.map(t => `
+                    <tr>
+                        <td><b>${t.user}</b></td>
+                        <td>${t.type}</td>
+                        <td><b>${t.amount} PTS</b></td>
+                        <td>
+                            <button class="btn btn-sm btn-green" onclick="approveTxn(${t.id})">✓</button>
+                            <button class="btn btn-sm btn-red" onclick="rejectTxn(${t.id})">✕</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            const userTb = document.getElementById('userMgmtTable');
+            if(users.length === 0) {
+                userTb.innerHTML = `<tr><td colspan="4" style="text-align:center;">No users registered.</td></tr>`;
+            } else {
+                userTb.innerHTML = users.map((u, idx) => `
+                    <tr>
+                        <td><b>${u.username}</b></td>
+                        <td><input type="text" id="pass_${idx}" value="${u.password}" style="width:50px; padding:2px; font-size:10px;"></td>
+                        <td><input type="number" id="bal_${idx}" value="${u.balance}" style="width:50px; padding:2px; font-size:10px;"></td>
+                        <td>
+                            <button class="btn btn-sm btn-green" onclick="updateUser(${idx})">Save</button>
+                            <button class="btn btn-sm btn-red" onclick="removeUser(${idx})">Del</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        document.getElementById('refreshLoadBtn').addEventListener('click', loadMasterData);
+        document.getElementById('marketFilterSelect').addEventListener('change', loadMasterData);
+
+        document.getElementById('publishBtn').addEventListener('click', function() {
+            const dt = document.getElementById('resultDateInput').value;
+            const m = document.getElementById('marketSelect').value;
+            const winNum = document.getElementById('resultNum').value.trim();
+
+            if(!dt || winNum.length !== 2) {
+                alert('Enter valid date and 2-digit result!');
+                return;
+            }
+
+            let results = JSON.parse(localStorage.getItem('sethwin_results')) || [];
+            let record = results.find(r => r.date === dt);
+            if(record) { record[m] = winNum; } 
+            else {
+                let newObj = { date: dt };
+                newObj[m] = winNum;
+                results.unshift(newObj);
+            }
+            localStorage.setItem('sethwin_results', JSON.stringify(results));
+
+            let bids = JSON.parse(localStorage.getItem('sethwin_bids')) || [];
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            let totalWinnerCount = 0;
+            let totalPayoutCredited = 0;
+
+            bids.forEach(b => {
+                if(b.market === m && (b.status === 'OPEN' || !b.status)) {
+                    if(b.num === winNum) {
+                        b.status = 'WIN';
+                        let winPts = parseInt(b.pts) * 90;
+                        totalWinnerCount++;
+                        totalPayoutCredited += winPts;
+
+                        let u = users.find(usr => usr.username === b.user);
+                        if(u) u.balance = (parseInt(u.balance) || 0) + winPts;
+                    } else {
+                        b.status = 'LOSS';
+                    }
+                }
+            });
+
+            localStorage.setItem('sethwin_bids', JSON.stringify(bids));
+            localStorage.setItem('sethwin_users', JSON.stringify(users));
+
+            alert(`🎉 Result Published!\nDate: ${dt}\nMarket: ${m}\nNumber: ${winNum}\nWinners: ${totalWinnerCount}\nCredited: ${totalPayoutCredited} PTS`);
+            document.getElementById('resultNum').value = '';
+            loadMasterData();
+        });
+
+        document.getElementById('createUserBtn').addEventListener('click', function() {
+            const u = document.getElementById('newAdminUser').value.trim();
+            const p = document.getElementById('newAdminPass').value.trim();
+            const pts = parseInt(document.getElementById('newAdminPts').value) || 1000;
+
+            if(!u || !p) { alert('Fill Username & Password!'); return; }
+
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            if(users.some(x => x.username === u)) { alert('Username already exists!'); return; }
+
+            users.push({ username: u, password: p, balance: pts });
+            localStorage.setItem('sethwin_users', JSON.stringify(users));
+
+            document.getElementById('newAdminUser').value = '';
+            document.getElementById('newAdminPass').value = '';
+            alert(`User Created: ${u}`);
+            loadMasterData();
+        });
+
+        window.updateUser = function(idx) {
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            const newPass = document.getElementById(`pass_${idx}`).value.trim();
+            const newBal = parseInt(document.getElementById(`bal_${idx}`).value) || 0;
+
+            if(users[idx]) {
+                users[idx].password = newPass;
+                users[idx].balance = newBal;
+                localStorage.setItem('sethwin_users', JSON.stringify(users));
+                alert(`Account updated for ${users[idx].username}!`);
+                loadMasterData();
+            }
+        };
+
+        window.removeUser = function(idx) {
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            if(confirm(`Delete account for ${users[idx].username}?`)) {
+                users.splice(idx, 1);
+                localStorage.setItem('sethwin_users', JSON.stringify(users));
+                loadMasterData();
+            }
+        };
+
+        window.approveTxn = function(id) {
+            let txns = JSON.parse(localStorage.getItem('sethwin_txns')) || [];
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+
+            let t = txns.find(x => x.id === id);
+            if(t) {
+                t.status = 'Approved';
+                let u = users.find(usr => usr.username === t.user);
+                if(u) {
+                    if(t.type === 'Deposit') u.balance += parseInt(t.amount);
+                    if(t.type === 'Withdraw') u.balance -= parseInt(t.amount);
+                }
+                localStorage.setItem('sethwin_txns', JSON.stringify(txns));
+                localStorage.setItem('sethwin_users', JSON.stringify(users));
+                alert(`Request Approved!`);
+                loadMasterData();
+            }
+        };
+
+        window.rejectTxn = function(id) {
+            let txns = JSON.parse(localStorage.getItem('sethwin_txns')) || [];
+            let t = txns.find(x => x.id === id);
+            if(t) {
+                t.status = 'Rejected';
+                localStorage.setItem('sethwin_txns', JSON.stringify(txns));
+                alert(`Request Rejected!`);
+                loadMasterData();
+            }
+        };
+    </script>
+</body>
+</html>

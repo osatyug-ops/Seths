@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SethWin VIP - Official Gaming Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #05070B;
+            --card-glass: linear-gradient(135deg, rgba(18, 24, 38, 0.95) 0%, rgba(8, 12, 20, 0.98) 100%);
+            --gold-grad: linear-gradient(135deg, #FFE885 0%, #F3A812 50%, #9A6800 100%);
+            --gold-glow: rgba(243, 168, 18, 0.35);
+            --gold-text: #FAD02C;
+            --border-gold: rgba(243, 168, 18, 0.3);
+            --text-main: #FFFFFF;
+            --text-sub: #8E9AAF;
+            --green-live: #00E676;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; background-image: radial-gradient(circle at 50% 0%, #131A29 0%, #05070B 80%); }
+
+        .app-container { width: 100%; max-width: 480px; min-height: 100vh; display: flex; flex-direction: column; position: relative; border-left: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 90px; }
+
+        .header { background: rgba(6, 9, 15, 0.95); backdrop-filter: blur(16px); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-gold); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.9); }
+        .brand-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 900; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+        .wallet-badge { background: linear-gradient(135deg, #2B1D04, #120C02); border: 1px solid var(--gold-text); border-radius: 30px; padding: 6px 14px; font-weight: 800; font-size: 13px; color: var(--gold-text); display: flex; align-items: center; gap: 6px; box-shadow: 0 0 12px var(--gold-glow); cursor: pointer; }
+
+        .recent-popups-bar { display: flex; gap: 8px; padding: 10px 14px; background: rgba(10, 14, 24, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+        .pop-card { flex: 1; background: linear-gradient(135deg, #151C2C, #080C16); border: 1px solid var(--border-gold); border-radius: 10px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .pop-market { font-size: 9px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; }
+        .pop-val { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 900; color: var(--gold-text); }
+
+        .ticker { background: linear-gradient(90deg, #1C1300, #3D2B00, #1C1300); padding: 7px 10px; text-align: center; font-size: 11px; color: #FFE885; font-weight: 700; border-bottom: 1px solid var(--border-gold); }
+
+        .page-view { padding: 14px; display: none; }
+        .section-title { font-size: 12px; font-weight: 800; color: var(--text-sub); margin: 8px 0 10px 0; text-transform: uppercase; letter-spacing: 1.2px; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: ''; width: 4px; height: 14px; background: var(--gold-grad); border-radius: 2px; }
+
+        .market-card { background: var(--card-glass); border: 1px solid var(--border-gold); border-radius: 18px; padding: 16px; margin-bottom: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.7); position: relative; }
+        .market-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .market-name { font-weight: 800; font-size: 17px; color: #FFF; letter-spacing: 0.5px; }
+        .market-time { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .timer-tag { font-size: 11px; font-weight: 800; color: var(--gold-text); margin-top: 3px; display: block; }
+        .status-badge { font-size: 10px; padding: 3px 9px; border-radius: 20px; font-weight: 800; background: rgba(0, 230, 118, 0.12); color: var(--green-live); border: 1px solid rgba(0, 230, 118, 0.3); }
+
+        .market-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .market-result { font-family: 'Cinzel', serif; font-size: 34px; font-weight: 900; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .play-btn { background: var(--gold-grad); color: #000; border: none; padding: 11px 20px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px var(--gold-glow); }
+
+        .glass-card { background: var(--card-glass); border: 1px solid var(--border-gold); border-radius: 18px; padding: 18px; margin-bottom: 14px; }
+        .field-group { margin-bottom: 12px; }
+        .field-group label { display: block; font-size: 11px; color: var(--text-sub); margin-bottom: 5px; font-weight: 700; }
+        .field-group input, .field-group select { width: 100%; background: #04060A; border: 1px solid rgba(255,255,255,0.12); color: #FFF; padding: 11px 13px; border-radius: 10px; font-size: 13px; font-weight: 600; outline: none; }
+        .action-btn { background: var(--gold-grad); color: #000; border: none; padding: 13px; border-radius: 10px; font-weight: 800; font-size: 13px; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 6px; box-shadow: 0 4px 15px var(--gold-glow); }
+        .btn-green { background: linear-gradient(135deg, #00E676, #00897B); color: #FFF; }
+        .btn-red { background: linear-gradient(135deg, #FF3D00, #B71C1C); color: #FFF; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+        th, td { padding: 9px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        th { color: var(--text-sub); font-weight: 700; }
+
+        .jodi-matrix-container { max-height: 280px; overflow-y: auto; padding-right: 4px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: #05080E; padding: 8px; }
+        .jodi-row-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .jodi-input-card { display: flex; align-items: center; justify-content: space-between; background: #0B0F19; border: 1px solid rgba(243, 168, 18, 0.2); border-radius: 8px; padding: 5px 8px; transition: 0.2s; }
+        .jodi-input-card.has-value { border-color: var(--gold-text); background: rgba(243, 168, 18, 0.15); box-shadow: 0 0 8px var(--gold-glow); }
+        .jodi-num-tag { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 900; color: var(--gold-text); width: 28px; }
+        .jodi-amt-input { width: 65px !important; padding: 5px 6px !important; font-size: 12px !important; text-align: center; border-radius: 6px !important; background: #030508 !important; border: 1px solid rgba(255,255,255,0.15) !important; color: #FFF !important; }
+
+        .modal-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: flex-end; z-index: 1000; }
+        .modal-body { width: 100%; max-width: 480px; background: #080C14; border-top: 2px solid var(--gold-text); border-radius: 22px 22px 0 0; padding: 18px; max-height: 85vh; overflow-y: auto; }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; }
+        .modal-title { font-weight: 800; font-size: 16px; color: var(--gold-text); }
+        .close-icon { background: none; border: none; color: #FFF; font-size: 20px; font-weight: 800; cursor: pointer; }
+
+        .tab-box { display: flex; gap: 8px; margin-bottom: 12px; }
+        .tab-item { flex: 1; background: #101622; border: 1px solid rgba(255,255,255,0.1); color: var(--text-sub); padding: 9px; border-radius: 8px; font-weight: 700; font-size: 11px; text-align: center; cursor: pointer; }
+        .tab-item.active { background: var(--gold-grad); color: #000; }
+
+        .summary-card { background: #070B14; border: 1px solid var(--border-gold); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; }
+        .summary-row.total { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; font-weight: 800; font-size: 14px; color: var(--gold-text); }
+        .checkout-items-list { max-height: 160px; overflow-y: auto; margin: 8px 0; border: 1px dashed rgba(255,255,255,0.1); border-radius: 6px; padding: 6px; }
+        .checkout-item-row { display: flex; justify-content: space-between; padding: 3px 6px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+        .bottom-nav { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); width: calc(100% - 28px); max-width: 452px; background: rgba(8, 12, 20, 0.95); backdrop-filter: blur(16px); border: 1px solid var(--border-gold); border-radius: 20px; display: flex; justify-content: space-around; padding: 10px 0; z-index: 200; box-shadow: 0 10px 25px rgba(0,0,0,0.9); }
+        .nav-link { color: var(--text-sub); font-size: 11px; font-weight: 700; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; text-decoration: none; }
+        .nav-link.active { color: var(--gold-text); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="brand-title">SETHWIN VIP</div>
+            <div class="wallet-badge" id="walletBtn">
+                <span>✨</span>
+                <span id="userBalanceText">LOGIN</span>
+            </div>
+        </div>
+
+        <div class="recent-popups-bar" id="topPopupsBar">
+            <div class="pop-card">
+                <div>
+                    <div class="pop-market" id="pop1Market">DESAWAR</div>
+                    <div style="font-size:8px; color:var(--text-sub);">Latest</div>
+                </div>
+                <div class="pop-val" id="pop1Val">--</div>
+            </div>
+            <div class="pop-card">
+                <div>
+                    <div class="pop-market" id="pop2Market">GALI</div>
+                    <div style="font-size:8px; color:var(--text-sub);">Latest</div>
+                </div>
+                <div class="pop-val" id="pop2Val">--</div>
+            </div>
+        </div>
+
+        <div class="ticker">👑 OFFICIAL LIVE BAZAR - FASTEST RESULTS & SECURE WALLET 👑</div>
+
+        <div id="viewHome" class="page-view" style="display: block;">
+            <div class="section-title">Live Markets</div>
+
+            <div class="market-card">
+                <div class="market-top">
+                    <div>
+                        <div class="market-name">DESAWAR</div>
+                        <div class="market-time">Result Time: 05:00 AM</div>
+                        <span class="timer-tag" id="timerDesawar">⏳ Next: --</span>
+                    </div>
+                    <span class="status-badge" id="badgeDesawar">● Live</span>
+                </div>
+                <div class="market-bottom">
+                    <div class="market-result" id="homeResDesawar">--</div>
+                    <div id="actionDesawar"></div>
+                </div>
+            </div>
+
+            <div class="market-card">
+                <div class="market-top">
+                    <div>
+                        <div class="market-name">GALI</div>
+                        <div class="market-time">Result Time: 11:30 PM</div>
+                        <span class="timer-tag" id="timerGali">⏳ Next: --</span>
+                    </div>
+                    <span class="status-badge" id="badgeGali">● Live</span>
+                </div>
+                <div class="market-bottom">
+                    <div class="market-result" id="homeResGali">--</div>
+                    <div id="actionGali"></div>
+                </div>
+            </div>
+
+            <div class="market-card">
+                <div class="market-top">
+                    <div>
+                        <div class="market-name">FARIDABAD</div>
+                        <div class="market-time">Result Time: 06:15 PM</div>
+                        <span class="timer-tag" id="timerFaridabad">⏳ Next: --</span>
+                    </div>
+                    <span class="status-badge" id="badgeFaridabad">● Live</span>
+                </div>
+                <div class="market-bottom">
+                    <div class="market-result" id="homeResFaridabad">--</div>
+                    <div id="actionFaridabad"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewChart" class="page-view">
+            <div class="section-title">Date-Wise Result Chart</div>
+            <div class="glass-card">
+                <table>
+                    <thead>
+                        <tr><th>Date</th><th>Desawar</th><th>Gali</th><th>Faridabad</th></tr>
+                    </thead>
+                    <tbody id="chartTableBody">
+                        <tr><td colspan="4" style="text-align:center; color:var(--text-sub);">No records found.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="viewAuth" class="page-view">
+            <div class="glass-card" id="loginCard">
+                <div class="modal-title" style="margin-bottom:12px; text-align:center;">Account Login</div>
+                <div class="field-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUser" placeholder="Enter username">
+                </div>
+                <div class="field-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" placeholder="Enter password">
+                </div>
+                <button class="action-btn" id="loginSubmit">Login Account</button>
+                <p style="font-size:11px; color:var(--text-sub); text-align:center; margin-top:12px; cursor:pointer;" id="gotoReg">
+                    New User? <span style="color:var(--gold-text); font-weight:700;">Create Account (Register)</span>
+                </p>
+            </div>
+
+            <div class="glass-card" id="registerCard" style="display:none;">
+                <div class="modal-title" style="margin-bottom:12px; text-align:center;">Create Account</div>
+                <div class="field-group">
+                    <label>Choose Username</label>
+                    <input type="text" id="regUser" placeholder="Choose username">
+                </div>
+                <div class="field-group">
+                    <label>Create Password</label>
+                    <input type="password" id="regPass" placeholder="Create password">
+                </div>
+                <button class="action-btn btn-green" id="regSubmit">Register & Get 500 PTS</button>
+                <p style="font-size:11px; color:var(--text-sub); text-align:center; margin-top:12px; cursor:pointer;" id="gotoLogin">
+                    Already registered? <span style="color:var(--gold-text); font-weight:700;">Login Here</span>
+                </p>
+            </div>
+
+            <div class="glass-card" id="profileCard" style="display:none;">
+                <div class="modal-title" style="margin-bottom:12px; text-align:center;">User Profile</div>
+                <div style="text-align:center; margin-bottom:16px;">
+                    <div style="font-size:35px;">👤</div>
+                    <h3 id="profileUsernameText" style="color:var(--gold-text); margin-top:4px;">User</h3>
+                    <p style="font-size:11px; color:var(--text-sub);">Status: VIP Active</p>
+                </div>
+                <div class="field-group">
+                    <label>Wallet Balance</label>
+                    <input type="text" id="profileWalletBal" readonly style="color:var(--gold-text); font-weight:800;">
+                </div>
+                <button class="action-btn btn-red" id="logoutBtn">Logout Account</button>
+            </div>
+        </div>
+
+        <div id="viewWallet" class="page-view">
+            <div class="glass-card">
+                <div class="modal-title" style="margin-bottom:10px;">Add Points (Deposit)</div>
+                <div class="field-group">
+                    <label>Enter Points (Min: 100 PTS)</label>
+                    <input type="number" id="depositAmount" placeholder="e.g. 500">
+                </div>
+                <button class="action-btn btn-green" id="depositSubmit">Request Deposit</button>
+            </div>
+
+            <div class="glass-card">
+                <div class="modal-title" style="margin-bottom:10px;">Withdraw Points</div>
+                <div class="field-group">
+                    <label>Withdraw Amount (Min: 500 PTS)</label>
+                    <input type="number" id="withdrawAmount" placeholder="e.g. 500">
+                </div>
+                <button class="action-btn" id="withdrawSubmit">Withdraw Request</button>
+            </div>
+
+            <div class="section-title">Wallet Transaction History</div>
+            <div class="glass-card">
+                <table>
+                    <thead>
+                        <tr><th>Type</th><th>Amount</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="txnTable">
+                        <tr><td colspan="3" style="text-align:center; color:var(--text-sub);">No transactions yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="viewHistory" class="page-view">
+            <div class="section-title" style="margin-top:0;">My Bet History</div>
+            <div class="glass-card">
+                <table>
+                    <thead>
+                        <tr><th>Market</th><th>Type</th><th>Num</th><th>Pts</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="historyTable">
+                        <tr><td colspan="5" style="text-align:center; color:var(--text-sub);">No bids placed yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-link active" id="navHome"><span>🏠</span>Home</div>
+            <div class="nav-link" id="navChart"><span>📊</span>Results</div>
+            <div class="nav-link" id="navWallet"><span>💳</span>Wallet</div>
+            <div class="nav-link" id="navHistory"><span>🎯</span>Bids</div>
+            <div class="nav-link" id="navAuth"><span>👤</span>Account</div>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="bidModal">
+        <div class="modal-body">
+            <div class="modal-head">
+                <div class="modal-title" id="modalMarketName">DESAWAR - Bidding Console</div>
+                <button class="close-icon" id="closeModalBtn">✕</button>
+            </div>
+
+            <div id="modalStepInput">
+                <div class="tab-box">
+                    <button class="tab-item active" id="tabJodi">Jodi (00-99 Amounts)</button>
+                    <button class="tab-item" id="tabHarf">Harf (Ander/Bahar)</button>
+                </div>
+
+                <div id="jodiBoxSection">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:10px; color:var(--text-sub); font-weight:700;">Fill Amount For Numbers:</span>
+                        <button id="clearAllInputsBtn" style="background:none; border:none; color:var(--gold-text); font-size:11px; font-weight:700; cursor:pointer;">Clear All</button>
+                    </div>
+                    <div class="jodi-matrix-container">
+                        <div class="jodi-row-grid" id="jodiInputsGrid"></div>
+                    </div>
+                </div>
+
+                <div id="harfBoxSection" style="display:none;">
+                    <div class="field-group">
+                        <label>Harf Side</label>
+                        <select id="harfType">
+                            <option value="Ander">Ander (Inside)</option>
+                            <option value="Bahar">Bahar (Outside)</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Single Amount for Harf (Min: 10 PTS)</label>
+                        <input type="number" id="harfPointsInput" placeholder="e.g. 100">
+                    </div>
+                </div>
+
+                <button class="action-btn" id="reviewBidBtn">Review & Proceed</button>
+            </div>
+
+            <div id="modalStepCheckout" style="display:none;">
+                <div style="text-align:center; font-size:12px; color:var(--gold-text); font-weight:800; margin-bottom:8px;">
+                    🛒 Checkout Summary Review
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-row">
+                        <span style="color:var(--text-sub);">Market:</span>
+                        <span id="summaryMarket" style="font-weight:800;">DESAWAR</span>
+                    </div>
+                    <div class="summary-row">
+                        <span style="color:var(--text-sub);">Numbers:</span>
+                        <span id="summaryCount" style="font-weight:800; color:var(--green-live);">0</span>
+                    </div>
+
+                    <div style="font-size:10px; color:var(--text-sub); margin-top:6px; font-weight:700;">Items List:</div>
+                    <div class="checkout-items-list" id="checkoutItemsList"></div>
+
+                    <div class="summary-row total">
+                        <span>Total Points:</span>
+                        <span id="summaryTotalAmount">0 PTS</span>
+                    </div>
+                </div>
+
+                <button class="action-btn btn-green" id="confirmFinalBidBtn">Confirm Final Bet</button>
+                <button class="action-btn" id="backToEditBtn" style="background:#141B26; color:#FFF; margin-top:4px; box-shadow:none;">← Back</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = localStorage.getItem('sethwin_user') || null;
+        let userBalance = parseInt(localStorage.getItem('sethwin_bal')) || 0;
+        let selectedMarket = '';
+        let gameType = 'Jodi';
+        let pendingBids = [];
+        let totalCheckoutAmt = 0;
+
+        let betHistory = JSON.parse(localStorage.getItem('sethwin_bids')) || [];
+        let walletTxns = JSON.parse(localStorage.getItem('sethwin_txns')) || [];
+        let resultRecords = JSON.parse(localStorage.getItem('sethwin_results')) || [];
+
+        function updateProfileUI() {
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            if(currentUser) {
+                let match = users.find(u => u.username === currentUser);
+                if(match) userBalance = match.balance;
+            }
+
+            if(currentUser) {
+                document.getElementById('userBalanceText').innerText = userBalance + ' PTS';
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('registerCard').style.display = 'none';
+                document.getElementById('profileCard').style.display = 'block';
+                document.getElementById('profileUsernameText').innerText = currentUser;
+                document.getElementById('profileWalletBal').value = userBalance + ' PTS';
+            } else {
+                document.getElementById('userBalanceText').innerText = 'LOGIN';
+                document.getElementById('loginCard').style.display = 'block';
+                document.getElementById('registerCard').style.display = 'none';
+                document.getElementById('profileCard').style.display = 'none';
+            }
+        }
+
+        function renderResultsAndPopups() {
+            resultRecords = JSON.parse(localStorage.getItem('sethwin_results')) || [];
+            const tbody = document.getElementById('chartTableBody');
+            
+            let latestDesawar = '--';
+            let latestGali = '--';
+            let latestFaridabad = '--';
+
+            if(resultRecords.length > 0 && resultRecords[0]) {
+                latestDesawar = resultRecords[0].DESAWAR || '--';
+                latestGali = resultRecords[0].GALI || '--';
+                latestFaridabad = resultRecords[0].FARIDABAD || '--';
+
+                document.getElementById('pop1Market').innerText = 'DESAWAR';
+                document.getElementById('pop1Val').innerText = latestDesawar;
+
+                document.getElementById('pop2Market').innerText = 'GALI';
+                document.getElementById('pop2Val').innerText = latestGali;
+            }
+
+            document.getElementById('homeResDesawar').innerText = latestDesawar;
+            document.getElementById('actionDesawar').innerHTML = (latestDesawar === '--') ? 
+                `<button class="play-btn" data-market="DESAWAR">Play Now</button>` : 
+                `<span style="color:var(--gold-text); font-weight:800; font-size:13px;">Result Out</span>`;
+            document.getElementById('badgeDesawar').innerText = (latestDesawar === '--') ? '● Live' : '● Closed';
+
+            document.getElementById('homeResGali').innerText = latestGali;
+            document.getElementById('actionGali').innerHTML = (latestGali === '--') ? 
+                `<button class="play-btn" data-market="GALI">Play Now</button>` : 
+                `<span style="color:var(--gold-text); font-weight:800; font-size:13px;">Result Out</span>`;
+            document.getElementById('badgeGali').innerText = (latestGali === '--') ? '● Live' : '● Closed';
+
+            document.getElementById('homeResFaridabad').innerText = latestFaridabad;
+            document.getElementById('actionFaridabad').innerHTML = (latestFaridabad === '--') ? 
+                `<button class="play-btn" data-market="FARIDABAD">Play Now</button>` : 
+                `<span style="color:var(--gold-text); font-weight:800; font-size:13px;">Result Out</span>`;
+            document.getElementById('badgeFaridabad').innerText = (latestFaridabad === '--') ? '● Live' : '● Closed';
+
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if(!currentUser) { alert('Login first to place bets!'); switchTab('auth'); return; }
+                    selectedMarket = this.getAttribute('data-market');
+                    document.getElementById('modalMarketName').innerText = selectedMarket + ' - Bidding Console';
+                    document.getElementById('modalStepInput').style.display = 'block';
+                    document.getElementById('modalStepCheckout').style.display = 'none';
+                    document.getElementById('bidModal').style.display = 'flex';
+                });
+            });
+
+            if(resultRecords.length > 0) {
+                tbody.innerHTML = resultRecords.map(r => `
+                    <tr>
+                        <td><b>${r.date}</b></td>
+                        <td><b style="color:var(--gold-text);">${r.DESAWAR || '--'}</b></td>
+                        <td><b style="color:var(--gold-text);">${r.GALI || '--'}</b></td>
+                        <td><b style="color:var(--gold-text);">${r.FARIDABAD || '--'}</b></td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-sub);">No records found.</td></tr>`;
+            }
+        }
+
+        function startLiveTimers() {
+            setInterval(() => {
+                const now = new Date();
+                function calcTime(targetHour, targetMin) {
+                    let target = new Date();
+                    target.setHours(targetHour, targetMin, 0, 0);
+                    if (now > target) target.setDate(target.getDate() + 1);
+                    let diff = target - now;
+                    let hrs = Math.floor(diff / (1000 * 60 * 60));
+                    let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    let secs = Math.floor((diff % (1000 * 60)) / 1000);
+                    return `${hrs.toString().padStart(2, '0')}h ${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`;
+                }
+
+                document.getElementById('timerDesawar').innerText = "⏳ Next: " + calcTime(5, 0);
+                document.getElementById('timerFaridabad').innerText = "⏳ Next: " + calcTime(18, 15);
+                document.getElementById('timerGali').innerText = "⏳ Next: " + calcTime(23, 30);
+            }, 1000);
+        }
+
+        function switchTab(page) {
+            document.getElementById('viewHome').style.display = (page === 'home') ? 'block' : 'none';
+            document.getElementById('viewChart').style.display = (page === 'chart') ? 'block' : 'none';
+            document.getElementById('viewWallet').style.display = (page === 'wallet') ? 'block' : 'none';
+            document.getElementById('viewHistory').style.display = (page === 'history') ? 'block' : 'none';
+            document.getElementById('viewAuth').style.display = (page === 'auth') ? 'block' : 'none';
+
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            if(page === 'home') document.getElementById('navHome').classList.add('active');
+            if(page === 'chart') document.getElementById('navChart').classList.add('active');
+            if(page === 'wallet') document.getElementById('navWallet').classList.add('active');
+            if(page === 'history') document.getElementById('navHistory').classList.add('active');
+            if(page === 'auth') document.getElementById('navAuth').classList.add('active');
+
+            if(page === 'history') renderHistory();
+            if(page === 'wallet') renderTxns();
+            if(page === 'chart') renderResultsAndPopups();
+        }
+
+        document.getElementById('navHome').addEventListener('click', () => switchTab('home'));
+        document.getElementById('navChart').addEventListener('click', () => switchTab('chart'));
+        document.getElementById('navWallet').addEventListener('click', () => switchTab('wallet'));
+        document.getElementById('navHistory').addEventListener('click', () => switchTab('history'));
+        document.getElementById('navAuth').addEventListener('click', () => switchTab('auth'));
+        document.getElementById('walletBtn').addEventListener('click', () => switchTab('wallet'));
+
+        const jodiInputsGrid = document.getElementById('jodiInputsGrid');
+        for(let i=0; i<100; i++) {
+            let numStr = i < 10 ? '0' + i : '' + i;
+            let item = document.createElement('div');
+            item.className = 'jodi-input-card';
+            item.id = `card_box_${numStr}`;
+            item.innerHTML = `
+                <span class="jodi-num-tag">${numStr}</span>
+                <input type="number" class="jodi-amt-input" data-num="${numStr}" placeholder="0" min="0" oninput="highlightBox(this, '${numStr}')">
+            `;
+            jodiInputsGrid.appendChild(item);
+        }
+
+        window.highlightBox = function(inp, num) {
+            let parentCard = document.getElementById(`card_box_${num}`);
+            if(inp.value && parseInt(inp.value) > 0) {
+                parentCard.classList.add('has-value');
+            } else {
+                parentCard.classList.remove('has-value');
+            }
+        };
+
+        document.getElementById('clearAllInputsBtn').addEventListener('click', () => {
+            document.querySelectorAll('.jodi-amt-input').forEach(inp => {
+                inp.value = '';
+                inp.dispatchEvent(new Event('input'));
+            });
+        });
+
+        document.getElementById('gotoReg').addEventListener('click', () => {
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('registerCard').style.display = 'block';
+        });
+
+        document.getElementById('gotoLogin').addEventListener('click', () => {
+            document.getElementById('loginCard').style.display = 'block';
+            document.getElementById('registerCard').style.display = 'none';
+        });
+
+        document.getElementById('regSubmit').addEventListener('click', () => {
+            const u = document.getElementById('regUser').value.trim();
+            const p = document.getElementById('regPass').value.trim();
+            if(!u || !p) { alert('Enter Username & Password!'); return; }
+
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            if(users.some(usr => usr.username === u)) { alert('Username already exists!'); return; }
+
+            users.push({ username: u, password: p, balance: 500 });
+            localStorage.setItem('sethwin_users', JSON.stringify(users));
+
+            currentUser = u;
+            userBalance = 500;
+            localStorage.setItem('sethwin_user', currentUser);
+            localStorage.setItem('sethwin_bal', userBalance);
+
+            updateProfileUI();
+            alert('Account created! 500 PTS added.');
+            switchTab('home');
+        });
+
+        document.getElementById('loginSubmit').addEventListener('click', () => {
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+            if(!u || !p) { alert('Enter Username & Password!'); return; }
+
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            let match = users.find(usr => usr.username === u && usr.password === p);
+
+            if(match) {
+                currentUser = match.username;
+                userBalance = match.balance;
+                localStorage.setItem('sethwin_user', currentUser);
+                localStorage.setItem('sethwin_bal', userBalance);
+                updateProfileUI();
+                alert(`Welcome ${currentUser}!`);
+                switchTab('home');
+            } else {
+                alert('Invalid Username or Password!');
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('sethwin_user');
+            updateProfileUI();
+            alert('Logged out successfully!');
+            switchTab('auth');
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('bidModal').style.display = 'none';
+        });
+
+        document.getElementById('tabJodi').addEventListener('click', function() {
+            gameType = 'Jodi';
+            this.classList.add('active');
+            document.getElementById('tabHarf').classList.remove('active');
+            document.getElementById('jodiBoxSection').style.display = 'block';
+            document.getElementById('harfBoxSection').style.display = 'none';
+        });
+
+        document.getElementById('tabHarf').addEventListener('click', function() {
+            gameType = 'Harf';
+            this.classList.add('active');
+            document.getElementById('tabJodi').classList.remove('active');
+            document.getElementById('jodiBoxSection').style.display = 'none';
+            document.getElementById('harfBoxSection').style.display = 'block';
+        });
+
+        document.getElementById('reviewBidBtn').addEventListener('click', () => {
+            pendingBids = [];
+            totalCheckoutAmt = 0;
+
+            if(gameType === 'Jodi') {
+                const inputs = document.querySelectorAll('.jodi-amt-input');
+                inputs.forEach(inp => {
+                    let val = parseInt(inp.value);
+                    if(val && val >= 10) {
+                        totalCheckoutAmt += val;
+                        pendingBids.push({ num: inp.getAttribute('data-num'), pts: val });
+                    }
+                });
+
+                if(pendingBids.length === 0) { alert('Enter amount for at least one number!'); return; }
+            } else {
+                let hAmt = parseInt(document.getElementById('harfPointsInput').value);
+                if(!hAmt || hAmt < 10) { alert('Enter minimum 10 PTS!'); return; }
+                totalCheckoutAmt = hAmt;
+                pendingBids.push({ num: document.getElementById('harfType').value, pts: hAmt });
+            }
+
+            if(totalCheckoutAmt > userBalance) {
+                alert(`Total bet (${totalCheckoutAmt}) exceeds balance (${userBalance})!`);
+                return;
+            }
+
+            document.getElementById('summaryMarket').innerText = selectedMarket;
+            document.getElementById('summaryCount').innerText = pendingBids.length + ' Item(s)';
+            document.getElementById('summaryTotalAmount').innerText = totalCheckoutAmt.toLocaleString() + ' PTS';
+
+            const itemsContainer = document.getElementById('checkoutItemsList');
+            itemsContainer.innerHTML = pendingBids.map(b => `
+                <div class="checkout-item-row">
+                    <span>Number: <b style="color:var(--gold-text);">${b.num}</b></span>
+                    <span>Points: <b>${b.pts} PTS</b></span>
+                </div>
+            `).join('');
+
+            document.getElementById('modalStepInput').style.display = 'none';
+            document.getElementById('modalStepCheckout').style.display = 'block';
+        });
+
+        document.getElementById('backToEditBtn').addEventListener('click', () => {
+            document.getElementById('modalStepInput').style.display = 'block';
+            document.getElementById('modalStepCheckout').style.display = 'none';
+        });
+
+        document.getElementById('confirmFinalBidBtn').addEventListener('click', () => {
+            userBalance -= totalCheckoutAmt;
+            localStorage.setItem('sethwin_bal', userBalance);
+
+            let users = JSON.parse(localStorage.getItem('sethwin_users')) || [];
+            let uIdx = users.findIndex(u => u.username === currentUser);
+            if(uIdx !== -1) {
+                users[uIdx].balance = userBalance;
+                localStorage.setItem('sethwin_users', JSON.stringify(users));
+            }
+
+            updateProfileUI();
+
+            let todayDate = new Date().toISOString().split('T')[0];
+            betHistory = JSON.parse(localStorage.getItem('sethwin_bids')) || [];
+
+            pendingBids.forEach(b => {
+                betHistory.unshift({ 
+                    id: Date.now() + Math.random(),
+                    user: currentUser, 
+                    market: selectedMarket, 
+                    type: gameType, 
+                    num: b.num, 
+                    pts: b.pts, 
+                    date: todayDate,
+                    time: new Date().toLocaleTimeString(),
+                    status: 'OPEN'
+                });
+            });
+            localStorage.setItem('sethwin_bids', JSON.stringify(betHistory));
+
+            document.querySelectorAll('.jodi-amt-input').forEach(i => {
+                i.value = '';
+                i.dispatchEvent(new Event('input'));
+            });
+            document.getElementById('harfPointsInput').value = '';
+
+            alert(`🎉 Bet Placed Successfully!`);
+            document.getElementById('bidModal').style.display = 'none';
+        });
+
+        document.getElementById('depositSubmit').addEventListener('click', () => {
+            if(!currentUser) { alert('Login first!'); switchTab('auth'); return; }
+            const amt = parseInt(document.getElementById('depositAmount').value);
+            if(!amt || amt < 100) { alert('Min deposit 100 PTS!'); return; }
+
+            walletTxns = JSON.parse(localStorage.getItem('sethwin_txns')) || [];
+            walletTxns.unshift({ id: Date.now(), user: currentUser, type: 'Deposit', amount: amt, status: 'Pending', time: new Date().toLocaleDateString() });
+            localStorage.setItem('sethwin_txns', JSON.stringify(walletTxns));
+            
+            document.getElementById('depositAmount').value = '';
+            renderTxns();
+            alert('Deposit Request Submitted!');
+        });
+
+        document.getElementById('withdrawSubmit').addEventListener('click', () => {
+            if(!currentUser) { alert('Login first!'); switchTab('auth'); return; }
+            const amt = parseInt(document.getElementById('withdrawAmount').value);
+            if(!amt || amt < 500) { alert('Min withdrawal 500 PTS!'); return; }
+            if(amt > userBalance) { alert('Insufficient balance!'); return; }
+
+            walletTxns = JSON.parse(localStorage.getItem('sethwin_txns')) || [];
+            walletTxns.unshift({ id: Date.now(), user: currentUser, type: 'Withdraw', amount: amt, status: 'Pending', time: new Date().toLocaleDateString() });
+            localStorage.setItem('sethwin_txns', JSON.stringify(walletTxns));
+            
+            document.getElementById('withdrawAmount').value = '';
+            renderTxns();
+            alert('Withdrawal Request Submitted!');
+        });
+
+        function renderHistory() {
+            betHistory = JSON.parse(localStorage.getItem('sethwin_bids')) || [];
+            const tbody = document.getElementById('historyTable');
+            let myBids = betHistory.filter(b => b.user === currentUser);
+            
+            if(!myBids || myBids.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-sub);">No bids placed yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = myBids.map(b => `
+                <tr>
+                    <td><b>${b.market}</b></td>
+                    <td>${b.type}</td>
+                    <td><span style="color:var(--gold-text); font-weight:800;">${b.num}</span></td>
+                    <td>${b.pts} PTS</td>
+                    <td><b style="color:${b.status === 'WIN' ? 'var(--green-live)' : (b.status === 'LOSS' ? 'var(--red-alert)' : 'var(--gold-text)')}">${b.status || 'OPEN'}</b></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderTxns() {
+            const tbody = document.getElementById('txnTable');
+            let myTxns = (JSON.parse(localStorage.getItem('sethwin_txns')) || []).filter(t => t.user === currentUser);
+            if(!myTxns || myTxns.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-sub);">No transactions yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = myTxns.map(t => `
+                <tr>
+                    <td><b>${t.type}</b></td>
+                    <td>${t.amount} PTS</td>
+                    <td><span style="color:${t.status === 'Completed' || t.status === 'Approved' ? 'var(--green-live)' : (t.status === 'Rejected' ? 'var(--red-alert)' : 'var(--gold-text)')}">${t.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        updateProfileUI();
+        renderResultsAndPopups();
+        startLiveTimers();
+    </script>
+</body>
+</html>
